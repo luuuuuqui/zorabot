@@ -8,7 +8,7 @@
 
 ## 🔥 Sobre ZORA MD
 
-**ZORA** Era uma base cara e ruim agora esta ultra rápido e leve para WhatsApp. Corrigida com foco em performance e facilidade de uso.
+**ZORA** Era uma base com custo alto e uma qualidade ruim mais agora esta ultra rápido e leve para WhatsApp. Corrigida com foco em performance e facilidade de uso.
 
 **Responsável:** [KimereLs](https://github.com/KimereLs)  
 **Repositório:** [Zora-Md](https://github.com/KimereLs/Zora-Md)
