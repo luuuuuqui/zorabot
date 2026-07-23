@@ -1,6 +1,10 @@
 {
   "dependencies": {
+    "@choewy/yt-dlp": "^1.1.0",
+    "@distube/ytdl-core": "^4.16.12",
     "@hapi/boom": "^10.0.1",
+    "@napi-rs/canvas": "^1.0.2",
+    "@ybd-project/ytdl-core": "^6.0.8",
     "awesome-phonenumber": "^7.8.0",
     "axios": "^0.21.1",
     "cfonts": "^2.10.0",
@@ -26,10 +30,15 @@
     "node-webpmux": "^3.1.1",
     "performance-now": "^2.1.0",
     "pino": "^10.3.1",
+    "play-dl": "^1.9.7",
     "qrcode-terminal": "^0.12.0",
     "qs": "^6.15.3",
     "request": "^2.88.2",
-    "wileys": "^0.6.6"
+    "wileys": "^0.6.6",
+    "yt-search": "^2.13.1"
+  },
+  "overrides": {
+    "libsignal": "npm:libsignal@6.0.0"
   },
   "name": "ZORA IDEALE",
   "description": "<div align=\"center\"> <img src=\"https://telegra.ph/file/4ae3fc5b5611b6fc7b1b6.jpg\" alt=\"BLACK SYSTEM\" width=\"300\" />",
