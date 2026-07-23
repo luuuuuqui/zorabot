@@ -16,9 +16,10 @@ const settingsJson = fs.existsSync(settingsPath) ? JSON.parse(fs.readFileSync(se
 const configAllJson = fs.existsSync(configAllPath) ? JSON.parse(fs.readFileSync(configAllPath, "utf8")) : {}
 const apiKeyJson = fs.existsSync(apiKeyPath) ? JSON.parse(fs.readFileSync(apiKeyPath, "utf8")) : {}
 
-var { nomebot, nomedono, prefix, numerodono } = settingsJson;
+// Adicionamos valores padrão caso o JSON esteja vazio {}
+var { nomebot = "Zora Bot", nomedono = "Dono", prefix = "!", numerodono = "" } = settingsJson;
 
-var { visualizarmsg, siteapi, donos, dbgp, botoes, channel } = configAllJson
+var { visualizarmsg = false, siteapi = "", donos = [], dbgp = "", botoes = true, channel = {} } = configAllJson
 
 const { APIKEYZORA } = apiKeyJson
 
@@ -182,7 +183,8 @@ try {var groupMetadata = isGroup ?  await zora.groupMetadata(from): ""} catch {r
 
 const groupName = isGroup ? groupMetadata.subject : '';
 
-const userID = isGroup ? info.key.participant.includes(':') ? info.key.participant.split(':')[0] +'@s.whatsapp.net': info.key.participant : info.key.remoteJid;
+// Adicionada interrogação (?) para evitar erro se o participant for nulo
+const userID = isGroup ? (info.key.participant?.includes(':') ? info.key.participant.split(':')[0] +'@s.whatsapp.net' : (info.key.participant || from)) : info.key.remoteJid;
 
 const sender = convertUserID(userID)
 
@@ -225,7 +227,8 @@ const quoted = info.quoted ? info.quoted : seloctt
 
 const isBot = info.key.fromMe ? true : false
 
-const isOwner = nmrdn.includes(sender) || JSON.stringify(donos).includes(sender) || isBot || isnit || issupre || ischyt || isSesc
+// Garantimos que 'donos' seja tratado como array mesmo se não estiver no JSON
+const isOwner = nmrdn.includes(sender) || JSON.stringify(donos || []).includes(sender) || isBot || isnit || issupre || ischyt || isSesc
 
 const isSupremeOwner = nmrdn.includes(sender) || isBot || isnit || issupre || ischyt || isSesc
 
