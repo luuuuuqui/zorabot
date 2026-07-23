@@ -14,6 +14,8 @@ var { visualizarmsg, siteapi, donos, dbgp, botoes, channel } = require("./db/con
 
 const { APIKEYZORA } = require("./db/apikey.json")
 
+const localApi = require("./js/localApi.js")
+
 //=============USER=JID-LID==============\\
 
 const { pushnames, existsLidData, userLid, convertUserID, saveUserID, addUserID, rmUserID, getname } = require("./database/pushnames/senderlid.js")
@@ -1369,7 +1371,7 @@ let ppimg = 'https://i.ibb.co/YB8G6zkT/70b84626-cf07-4a45-895e-d3f367bb3028.jpg'
 let memoria = (process.memoryUsage().rss / 1024 / 1024).toFixed(2) + ' MB';
 let tempoFormatado = kyun(uptime); 
 let fundoAPI = 'https://i.ibb.co/m5KgWDj7/85b1152d-ac35-421a-aedc-90aff993daaf.jpg';
-let cardUrl = `${siteapi}/canvas/ping2?ping=${ping}&uptime=${encodeURIComponent(tempoFormatado)}&memory=${encodeURIComponent(memoria)}&avatar=${encodeURIComponent(ppimg)}&fundo=${encodeURIComponent(fundoAPI)}&apitoken=${APIKEYZORA}`;    
+let cardPingBuffer = await localApi.createPingCard({ ping, tempoFormatado, memoria, avatarUrl: ppimg, fundoUrl: fundoAPI });
 host = detectarHost()
 txt = `⚡ 𝚅𝚎𝚕𝚘𝚌𝚒𝚍𝚊𝚍𝚎〘 ${String(ping)} 〙
 ✍🏽 𝙿𝚒𝚗𝚐⇒ ${stts}
@@ -1378,23 +1380,28 @@ txt = `⚡ 𝚅𝚎𝚕𝚘𝚌𝚒𝚍𝚊𝚍𝚎〘 ${String(ping)} 〙
 ⇒${sendHours("DD/MM/YYYY")}ㅤ┋ㅤ${sendHours("HH:mm:ss")}
 ⌚ 𝚃𝚎𝚖𝚙𝚘 𝙰𝚝𝚒𝚟𝚘
 ⇒${kyun(uptime)}`
-sendUrlText(from, txt, nomebot, `⇒ ${sendHours("DD/MM/YYYY")}ㅤ┋ㅤ${sendHours("HH:mm:ss")}`, cardUrl, siteapi, seloctt)
+if (cardPingBuffer) {
+  sendButton(from, { image: cardPingBuffer, caption: txt, footer: nomebot }, zora, [], info);
+} else {
+  zora.sendMessage(from, { text: txt }, { quoted: info });
+}
 break;
 
 case 'play':
 if (!q) return reply(`Olá ${sender.split('@')[0]} me diga o nome da música!\nExemplo: ${prefix}play eu era`);
 reagir("👾") 
 try {
-let buscaRes = await axios.get(`${siteapi}/api/search/yt?q=${encodeURIComponent(q)}&apitoken=${APIKEYZORA}`);
-let dadosBusca = buscaRes.data.data;
-if (!buscaRes.data.sucesso || !dadosBusca) return reply('Não consegui encontrar essa música ):');
+let buscaRes = await localApi.searchYt(q);
+let dadosBusca = buscaRes.data;
+if (!buscaRes.sucesso || !dadosBusca) return reply('Não consegui encontrar essa música ):');
 let titulo = dadosBusca.titulo;
 let canal = dadosBusca.canal;
 let thumb = dadosBusca.thumbnail;
 let duracao = dadosBusca.duracao;
 let linkYt = dadosBusca.url;
 let views = dadosBusca.views.toLocaleString('pt-BR'); 
-let cardMusic = `${siteapi}/canvas/musicard?nome=${encodeURIComponent(titulo)}&autor=${encodeURIComponent(canal)}&logo=${encodeURIComponent(thumb)}&end=${encodeURIComponent(duracao)}&apitoken=${APIKEYZORA}`;
+
+let cardMusicBuffer = await localApi.createMusicCard({ titulo, canal, duracao, thumbUrl: thumb });
 let txtPlay = `🎵 𝐘𝐨𝐮𝐓𝐮𝐛𝐞 𝐏𝐥𝐚𝐲\n\n`
 txtPlay += `🎧 𝐓𝐢́𝐭𝐮𝐥𝐨⇒ ${titulo}\n`
 txtPlay += `👤 𝐂𝐚𝐧𝐚𝐥⇒ ${canal}\n`
@@ -1402,8 +1409,11 @@ txtPlay += `⏱️ 𝐃𝐮𝐫𝐚𝐜̧𝐚̃𝐨⇒ ${duracao}\n`
 txtPlay += `👁️ 𝐕𝐢𝐞𝐰𝐬⇒ ${views}\n`
 txtPlay += `🔗 𝐋𝐢𝐧𝐤⇒ ${linkYt}\n\n`
 txtPlay += `👇🏽 *Escolha o formato para baixar:*`
+
+let imagePayload = cardMusicBuffer ? cardMusicBuffer : { url: thumb };
+
 sendButton(from, {
-image: { url: cardMusic },
+image: imagePayload,
 caption: txtPlay,    
 footer: `${nomebot}`         
 }, zora, [
@@ -1411,17 +1421,17 @@ footer: `${nomebot}`
 { type: `cmd`, text: `VÍDEO`, command: `${prefix}ytmp4 ${linkYt}` }
 ], info);
 } catch (e) {
-reply('Ops um erro no servidor da API.');
+reply('Ops, um erro ocorreu ao buscar a música.');
 }
 break;
 
 case 'ytmp3':
 if (!q) return reply(`Cade o link do youtube?`);
+reagir("🎧")
 try {
-let apiAudio = await axios.get(`${siteapi}/api/dl/ytmp3?url=${q}&apitoken=${APIKEYZORA}`);
-if(!apiAudio.data.sucesso) return reply('Erro ao gerar o áudio.');        
-let linkBaixar = apiAudio.data.data.download;
-zora.sendMessage(from, { audio: { url: linkBaixar }, mimetype: 'audio/mp4' }, { quoted: info });
+let resAudio = await localApi.downloadYtMp3(q);
+if (!resAudio.sucesso || !resAudio.buffer) return reply('Erro ao gerar o áudio.');        
+zora.sendMessage(from, { audio: resAudio.buffer, mimetype: 'audio/mp4' }, { quoted: info });
 } catch(e) {
 reply('Erro ao baixar.');
 }
@@ -1429,11 +1439,11 @@ break;
 
 case 'ytmp4':
 if (!q) return reply(`Cade o link do youtube?`);
+reagir("🎥")
 try {
-let apiVideo = await axios.get(`${siteapi}/api/dl/ytmp4?url=${q}&apitoken=${APIKEYZORA}`);
-if(!apiVideo.data.sucesso) return reply('Erro ao gerar o vídeo.');        
-let linkBaixar = apiVideo.data.data.download;
-zora.sendMessage(from, { video: { url: linkBaixar }, mimetype: 'video/mp4' }, { quoted: info });
+let resVideo = await localApi.downloadYtMp4(q);
+if (!resVideo.sucesso || !resVideo.buffer) return reply('Erro ao gerar o vídeo.');        
+zora.sendMessage(from, { video: resVideo.buffer, mimetype: 'video/mp4' }, { quoted: info });
 } catch(e) {
 reply('Erro ao baixar.');
 }
