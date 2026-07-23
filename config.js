@@ -46,6 +46,12 @@ const date = moment.tz('America/Sao_Paulo').format('DD/MM/YY');
 
 const { getBuffer, nit, supre, chyt, sesc, banner2, banner3, getMembros, getRandom, getExtension, getGroupAdmins, isFiltered, addFilter, upload } = require("./js/functions.js")
 
+fs.ensureDirSync('./db')
+fs.ensureDirSync('./database')
+fs.ensureDirSync('./database/grupos')
+fs.ensureDirSync('./database/pushnames')
+fs.ensureDirSync('./database/midia/audios/ptt')
+
 // DELETAR ARQUIVO..
 function DLT_FL(file) {
 try {
@@ -55,13 +61,13 @@ fs.unlinkSync(file);
 }
 
 //json
-const ownerconfig = JSON.parse(fs.readFileSync("./db/settings.json"))
+const ownerconfig = fs.existsSync("./db/settings.json") ? JSON.parse(fs.readFileSync("./db/settings.json", "utf8")) : {}
 
-const allconfig = JSON.parse(fs.readFileSync("./db/config-all.json"))
+const allconfig = fs.existsSync("./db/config-all.json") ? JSON.parse(fs.readFileSync("./db/config-all.json", "utf8")) : {}
 
-const logospath = JSON.parse(fs.readFileSync("./database/logos.json"))
+const logospath = fs.existsSync("./database/logos.json") ? JSON.parse(fs.readFileSync("./database/logos.json", "utf8")) : { logo: "" }
 
-const banned = JSON.parse(fs.readFileSync("./database/banned.json"))
+const banned = fs.existsSync("./database/banned.json") ? JSON.parse(fs.readFileSync("./database/banned.json", "utf8")) : []
 
 /**
  * Representa um participante do grupo com seus IDs e níveis de permissão.
@@ -219,7 +225,7 @@ const rmLetras = (txt) => {
   return txt.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
 }
 
-const { convertUserID } = require("./database/pushnames/senderlid.js")
+const { convertUserID } = require("./js/senderlid.js")
 
 const identArroba = (txt) => {
   if(txt.includes('@')) {

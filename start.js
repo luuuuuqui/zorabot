@@ -2,9 +2,11 @@ const { 'default': makeWASocket, useMultiFileAuthState, makeInMemoryStore, Disco
 
 const { fs, Boom, axios, crypto, util, P, linkfy, request, cheerio, ms, exec, moment, time, hora, date, getBuffer, fetchJson, getBase64, upload, colors, NodeCache, getGroupAdmins, antiModLetra, isJsonIncludes, identArroba } = require('./config.js');
 
-var { conexao } = require("./db/config-all.json");
+const configAllPath = "./db/config-all.json"
+const configAllJson = fs.existsSync(configAllPath) ? JSON.parse(fs.readFileSync(configAllPath, "utf8")) : {}
+var { conexao = {} } = configAllJson;
 
-const { convertUserID } = require('./database/pushnames/senderlid.js')
+const { convertUserID } = require('./js/senderlid.js')
 
 const replaceAll = (frase, txt, rp) => {
   caixa = [frase]

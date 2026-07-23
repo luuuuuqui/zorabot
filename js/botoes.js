@@ -4,7 +4,9 @@ const { proto, prepareWAMessageMedia, generateWAMessageFromContent, generateMess
 
 const identArroba = (txt) => {return txt.includes('@') ? txt.split('@')[1].replace(new RegExp("[()+-/ +/]", "gi"), "") + "@s.whatsapp.net" : txt.replace(new RegExp("[()+-/ +/]", "gi"), "") + "@s.whatsapp.net"}
 
-var botoes = JSON.parse(fs.readFileSync("./db/config-all.json")).botoes
+const configAllPath = "./db/config-all.json"
+const configAllJson = fs.existsSync(configAllPath) ? JSON.parse(fs.readFileSync(configAllPath, "utf8")) : {}
+var botoes = configAllJson?.botoes || false
 
 const sendButton = async(from, dados, zora, buttons, info) => {
   try {

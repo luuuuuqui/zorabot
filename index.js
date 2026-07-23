@@ -8,17 +8,25 @@ const os = require("os")
 
 const { banned, logospath, allconfig, ownerconfig } = require("./config.js")
 
-var { nomebot, nomedono, prefix, numerodono } = require("./db/settings.json");
+const settingsPath = "./db/settings.json"
+const configAllPath = "./db/config-all.json"
+const apiKeyPath = "./db/apikey.json"
 
-var { visualizarmsg, siteapi, donos, dbgp, botoes, channel } = require("./db/config-all.json")
+const settingsJson = fs.existsSync(settingsPath) ? JSON.parse(fs.readFileSync(settingsPath, "utf8")) : {}
+const configAllJson = fs.existsSync(configAllPath) ? JSON.parse(fs.readFileSync(configAllPath, "utf8")) : {}
+const apiKeyJson = fs.existsSync(apiKeyPath) ? JSON.parse(fs.readFileSync(apiKeyPath, "utf8")) : {}
 
-const { APIKEYZORA } = require("./db/apikey.json")
+var { nomebot, nomedono, prefix, numerodono } = settingsJson;
+
+var { visualizarmsg, siteapi, donos, dbgp, botoes, channel } = configAllJson
+
+const { APIKEYZORA } = apiKeyJson
 
 const localApi = require("./js/localApi.js")
 
 //=============USER=JID-LID==============\\
 
-const { pushnames, existsLidData, userLid, convertUserID, saveUserID, addUserID, rmUserID, getname } = require("./database/pushnames/senderlid.js")
+const { pushnames, existsLidData, userLid, convertUserID, saveUserID, addUserID, rmUserID, getname } = require("./js/senderlid.js")
 
 //====================≠≠===============\\
  

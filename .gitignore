@@ -19,6 +19,10 @@ tmp/
 temp/
 .cache/
 
+# dados locais e pessoais do usuário
+/db/
+/database/
+
 # cobertura de testes
 coverage/
 .nyc_output/
