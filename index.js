@@ -1142,7 +1142,7 @@ async function atualizarGrupos(reset = false) {
   dbgp = sendHours('HH')
   setConfig(allconfig)
   allgp = Object.entries((await zora.groupFetchAllParticipating())).slice(0).map(entry => entry[1]).map(v => v).sort((a, b) => (a[0] < b.length))
-  saveJSON(allgp, './grupos.json')
+  saveJSON(allgp, './db/grupos.json')
   console.log(colors.green(`LISTA DE ${allgp.length} GRUPOS ATUALIZADA COM SUCESSO ÀS ${sendHours('HH:mm')}`))
   //DADOS DE GRUPOS SALVOS
   deleteGP = allGroups.filter(a => !allgp.some(b => b.id === a.id))
