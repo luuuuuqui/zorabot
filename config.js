@@ -149,7 +149,7 @@ const banned = JSON.parse(fs.readFileSync("./database/banned.json", "utf8"))
  * Retorna um array vazio caso o arquivo não exista.
  * * @type {GroupMetadata[]}
  */
-const allGroups = fs.existsSync('./grupos.json') ? JSON.parse(fs.readFileSync('./grupos.json')) : []
+const allGroups = fs.existsSync('./db/grupos.json') ? JSON.parse(fs.readFileSync('./db/grupos.json')) : []
 
 // CONVERTER BYTES EM KB / MB / GB / TB
 const convertBytes = function(bytes) {
