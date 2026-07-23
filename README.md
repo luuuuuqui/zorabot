@@ -65,16 +65,9 @@ sh zora.sh
 
 ---
 
-## 🔑 API Token para Downloads
+## ⚡ Processamento Local (Sem API Externa)
 
-Para ativar **comandos de download** no bot, você precisa gerar um token:
-
-1. Acesse: **https://duck.waguri.space**
-2. Gere seu **API KEY**
-3. Configure no bot
-4. Pronto! ✅
-
-> Sem o token, comandos de download não funcionarão
+Os comandos de **busca, download (MP3/MP4)** e **geração de cards (Canvas)** funcionam 100% **localmente** no bot via `yt-search`, `@choewy/yt-dlp` e `@napi-rs/canvas`. Não é necessário cadastro ou token em APIs terceiras! ✅
 
 ---
 
